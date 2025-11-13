@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atajos de teclado Excel 365</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        h1 {
+            color: #00ff62;
+            border-bottom: 2px solid #00ff62;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .question-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .options label:hover {
+            background-color: #e9ecef;
+        }
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            background-color: #00ff62; /* Color primario */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #00ff62;
+        }
+        #feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            display: block; 
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .score-box {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #00ff62;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .score-box h2 {
+            margin-top: 0;
+            color: #00ff62;
+        }
+    </style>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+
+<div class="container">
+    <h1>Atajos de teclado Excel 365</h1>
+    <div id="quiz-container">
+    </div>
+    
+    <div id="feedback"></div>
+    
+    <button id="action-button" onclick="handleQuizClick()">Continuar</button> 
+
+    <div id="result-screen" style="display:none;">
+    </div>
+</div>
+
+<script>
+// Preguntas de Excel
+    const questions = [
+                {
+                    q: "Para saltar al extremo del área de datos actual, ¿qué atajo es el correcto?",
+                    options: ["Ctrl + Flechas del cursor", "Ctrl + Fin", "May + Tab"],
+                    correct: "A"
+                },
+                {
+                    q: "¿Qué tecla de función te permite acceder a la opción \"Guardar como\"?",
+                    options: ["F11", "F2", "F12"],
+                    correct: "C"
+                },
+                {
+                    q: "Para abrir el cuadro de diálogo de formato de celdas (donde puedes cambiar número, alineación, fuente, etc.), ¿qué atajo es el correcto?",
+                    options: ["Ctrl + K", "Ctrl + 1", "Ctrl + 5"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué tecla de función te permite alternar entre referencia absoluta y referencia relativa (e incluso mixta) cuando estás editando una fórmula?",
+                    options: ["F9", "F4", "F2"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Cuál es el atajo de teclado para insertar un gráfico en una nueva hoja (hoja de gráfico)?",
+                    options: ["Alt + F1", "Ctrl + T", "F11"],
+                    correct: "C"
+                },
+                {
+                    q: "Si deseas insertar la hora actual en una celda, ¿cuál de los siguientes atajos debes utilizar?",
+                    options: ["Ctrl + ,", "Alt + Enter", "Ctrl + Shift + :"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Qué atajo de teclado te permite aplicar el formato de texto Negrita?",
+                    options: ["Ctrl + 4", "Ctrl + K", "Ctrl + N"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Cuál es el atajo de teclado para cambiar a la hoja anterior (pestaña anterior) en tu libro de Excel?",
+                    options: ["Alt + Repág", "Ctrl + Repág", "May + Tab"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué atajo de teclado se utiliza para aplicar el formato número con decimales (Formato de estilo millares con dos decimales)?",
+                    options: ["Ctrl + Shift + $", "Ctrl + Shift + %", "Ctrl + Shift + !"],
+                    correct: "C"
+                },
+                {
+                    q: "Para aplicar rápidamente la función Autosuma (SUMA) a un rango de celdas adyacentes, ¿cuál es el atajo de teclado?",
+                    options: ["Shift + F3", "Alt + =", "F9"],
+                    correct: "B"
+                },
+                // --- BLOQUE 2 ---
+                {
+                    q: "Para abrir un libro (archivo) existente de Excel rápidamente, ¿qué atajo de teclado se utiliza?",
+                    options: ["Ctrl + G", "Ctrl + P", "Ctrl + A"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Cuál es la acción que se ejecuta al pulsar el atajo Ctrl + Fin?",
+                    options: ["Cambia a la siguiente hoja.", "Última celda del área rellena.", "Salta al final de los datos."],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué atajo de teclado se utiliza para Guardar el libro de trabajo?",
+                    options: ["F12", "Ctrl + P", "Ctrl + G"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Qué atajo de teclado se utiliza para Activar o desactivar los filtros en un rango de datos o una tabla?",
+                    options: ["Alt + F1", "Ctrl + Shift + L", "Ctrl + T"],
+                    correct: "B"
+                },
+                {
+                    q: "Para ir directamente a una celda específica (abrir el cuadro de diálogo \"Ir a\") y poder escribir su referencia, ¿qué atajo de teclado debes utilizar?",
+                    options: ["Ctrl + Espacio", "Ctrl + I", "Ctrl + Inicio"],
+                    correct: "B"
+                },
+                {
+                    q: "Para aplicar el formato de texto Cursiva a una celda o rango, ¿qué atajo de teclado debes utilizar?",
+                    options: ["Ctrl + 2", "Ctrl + K", "Ctrl + S"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué tecla de función te permite entrar en el modo de edición de la celda activa?",
+                    options: ["F1", "F2", "F4"],
+                    correct: "B"
+                },
+                {
+                    q: "Para seleccionar una columna completa utilizando el teclado, ¿qué atajo debes usar?",
+                    options: ["Ctrl + Espacio", "Shift + Espacio", "Ctrl + Shift + Flechas"],
+                    correct: "A"
+                },
+                {
+                    q: "Si deseas mover tu vista una pantalla hacia la izquierda en la hoja de cálculo, ¿qué atajo de teclado debes utilizar?",
+                    options: ["Repág", "Alt + AvPág", "Alt + Repág"],
+                    correct: "C"
+                },
+                {
+                    q: "Para Imprimir / Exportar a PDF el libro de trabajo, ¿cuál es el atajo de teclado que se utiliza?",
+                    options: ["Ctrl + U", "F12", "Ctrl + P"],
+                    correct: "C"
+                },
+                // --- BLOQUE 3 ---
+                {
+                    q: "¿Qué atajo de teclado te permite editar la celda activa (entrar en el modo de edición de su contenido)?",
+                    options: ["Ctrl + Enter", "F2", "F4"],
+                    correct: "B"
+                },
+                {
+                    q: "Para aplicar el Formato moneda a la celda o rango seleccionado (generalmente con dos decimales y el símbolo de moneda), ¿qué atajo de teclado se utiliza?",
+                    options: ["Ctrl + Shift + !", "Ctrl + Shift + %", "Ctrl + Shift + $"],
+                    correct: "C"
+                },
+                {
+                    q: "Para ir directamente a la celda A1 de tu hoja de cálculo, ¿qué combinación de teclas debes usar?",
+                    options: ["Ctrl + I", "Ctrl + Inicio", "May + Tab"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué atajo se utiliza para desplazarte una pantalla hacia abajo en la hoja de cálculo?",
+                    options: ["AvPág", "Repág", "Ctrl + Flechas"],
+                    correct: "A"
+                },
+                {
+                    q: "Para insertar la función (abrir el cuadro de diálogo para insertar función), ¿qué atajo de teclado debes utilizar?",
+                    options: ["Alt + =", "Shift + F3", "F9"],
+                    correct: "B"
+                },
+                {
+                    q: "Para aplicar el formato de texto Subrayado a una celda o rango, ¿qué atajo de teclado debes utilizar?",
+                    options: ["Ctrl + 2", "Ctrl + 3", "Ctrl + 4"],
+                    correct: "C"
+                },
+                {
+                    q: "Si necesitas Insertar la fecha actual en una celda de Excel, ¿cuál es el atajo de teclado correcto?",
+                    options: ["Ctrl + Shift + :", "Ctrl + ,", "Alt + Enter"],
+                    correct: "B"
+                },
+                {
+                    q: "Para Crear una tabla a partir de un rango de datos seleccionado, ¿qué atajo de teclado se utiliza?",
+                    options: ["F11", "Alt + F1", "Ctrl + T"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Cuál es el atajo de teclado para aplicar el formato de texto Tachado?",
+                    options: ["Ctrl + 5", "Ctrl + S", "Ctrl + Shift + !"],
+                    correct: "A"
+                },
+                // --- BLOQUE FINAL DE REFUERZO ---
+                {
+                    q: "¿Qué atajo de teclado te permite Seleccionar una fila completa?",
+                    options: ["Ctrl + Espacio", "Shift + Espacio", "Ctrl + I"],
+                    correct: "B"
+                },
+                {
+                    q: "Si estás editando una fórmula y quieres insertar la función, ¿qué atajo de teclado te permite abrir el cuadro de diálogo para insertar la función?",
+                    options: ["Alt + =", "F9", "Shift + F3"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Qué atajo de teclado te permite ir directamente a la última celda del área rellena de la hoja?",
+                    options: ["Ctrl + Fin", "Ctrl + Inicio", "Alt + Repág"],
+                    correct: "A"
+                },
+                {
+                    q: "Para abrir el cuadro de diálogo de formato de celdas (donde se gestionan todos los formatos: número, alineación, etc.), ¿qué atajo de teclado es el correcto?",
+                    options: ["Ctrl + 1", "Ctrl + 5", "Ctrl + F"],
+                    correct: "A"
+                },
+                {
+                    q: "Para aplicar el Formato porcentaje a un rango seleccionado, ¿qué atajo de teclado se utiliza?",
+                    options: ["Ctrl + Shift + $", "Ctrl + Shift + %", "Ctrl + Shift + !"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué atajo de teclado se utiliza para insertar una Nueva línea en celda (salto de línea) mientras se está editando su contenido?",
+                    options: ["Ctrl + Enter", "Alt + Enter", "F2"],
+                    correct: "B"
+                },
+                {
+                    q: "Si quieres crear un Gráfico incrustado (un gráfico que aparece directamente en la misma hoja de cálculo), ¿qué atajo debes utilizar?",
+                    options: ["F11", "Alt + F1", "Ctrl + T"],
+                    correct: "B"
+                },
+                {
+                    q: "Si quieres Imprimir / Exportar a PDF el libro, ¿cuál es el atajo de teclado que te lleva directamente a esa opción?",
+                    options: ["Ctrl + G", "Ctrl + P", "F12"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué atajo de teclado te permite aplicar rápidamente la función Autosuma (SUMA) a un rango de celdas adyacentes?",
+                    options: ["Shift + F3", "Alt + =", "F9"],
+                    correct: "B"
+                },
+                {
+                    q: "Si deseas mover tu vista una pantalla hacia la derecha en la hoja de cálculo, ¿qué atajo de teclado debes utilizar?",
+                    options: ["Alt + AvPág", "Alt + Repág", "Ctrl + AvPág"],
+                    correct: "A"
+                },
+                {
+                    q: "¿Qué combinación de teclas debes usar para moverte a la Celda de la izquierda?",
+                    options: ["Tab", "May + Tab", "Ctrl + Repág"],
+                    correct: "B"
+                },
+                {
+                    q: "Para Crear tabla (convertir un rango de datos en una tabla estructurada), ¿qué atajo de teclado es el correcto?",
+                    options: ["Alt + T", "Ctrl + T", "F11"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué combinación selecciona todas las celdas de la hoja activa?",
+                    options: ["Mayus + F3", "Ctrl + 6", "Ctrl + E"],
+                    correct: "C"
+                },
+                {
+                    q: "¿Qué función tiene el atajo de teclado CTRL + 0?",
+                    options: ["Oculta la columna seleccionada", "Aplica el formato de doble tachado", "Oculta la fila seleccionada"],
+                    correct: "A"
+                },
+                {
+                    q: "¿Qué combinación de teclas oculta la fila seleccionada?",
+                    options: ["Ctrl + 0", "Ctrl + 7", "Ctrl + 9"],
+                    correct: "C"
+                },
+                {
+                    q: "Si quiero copiar la celda superior a la que estoy situada, ¿qué atajo de teclado usaré?",
+                    options: ["Ctrl + Mayus + &", "Ctrl + Mayus + '", "Ctrl + Mayus + #"],
+                    correct: "B"
+                },
+                {
+                    q: "Si quiero poner bordes a mi celda seleccionada, ¿qué combinación deberé utilizar?",
+                    options: ["Ctrl + Mayus + &", "Ctrl + Mayus + '", "Ctrl + Mayus + -"],
+                    correct: "A"
+                },
+                {
+                    q: "Si tengo una celda con bordes aplicados y quiero eliminarlos, ¿qué atajo de teclado hará esa función?",
+                    options: ["Ctrl + Mayus + &", "Ctrl + Mayus + -", "Ctrl + Mayus + :"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Qué atajo de teclado deberé usar para seleccionar la región actual de celdas que contengan datos?",
+                    options: ["Ctrl + *", "Ctrl + ,", "Ctrl + :"],
+                    correct: "A"
+                },
+                {
+                    q: "Si necesito calcular la hoja de cálculo activa, ¿Cuál de los siguientes atajos de teclado deberé seleccionar?",
+                    options: ["F9", "Mayus + F9", "Ctrl + Mayus + F8"],
+                    correct: "B"
+                },
+                {
+                    q: "¿Cuál es el atajo de teclado para aplicar el formato de texto Tachado?",
+                    options: ["Ctrl + 5", "Ctrl + K", "Ctrl + S"],
+                    correct: "A"
+                }
+            ];
+       // Variables globales
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const quizSize = 10;
+        let currentQuizQuestions = [];
+        let totalQuestions = quizSize;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const actionButton = document.getElementById('action-button');
+        const feedbackDiv = document.getElementById('feedback');
+        let quizState = 'CHECK_ANSWER';
+
+        /**
+         * 1. Genera una selección aleatoria de 10 preguntas.
+         */
+        function getRandomQuestions() {
+            const fullBank = [...questions];
+            
+            // Algoritmo Fisher-Yates (Shuffle)
+            for (let i = fullBank.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [fullBank[i], fullBank[j]] = [fullBank[j], fullBank[i]];
+            }
+            
+            currentQuizQuestions = fullBank.slice(0, quizSize);
+            totalQuestions = currentQuizQuestions.length;
+
+            currentQuestionIndex = 0;
+            score = 0;
+        }
+
+        /**
+         * 2. Inicializa el quiz: genera preguntas y carga la primera.
+         */
+        function initQuiz() {
+            getRandomQuestions();
+            loadQuestion(); 
+        }
+
+        /**
+         * 3. Carga la pregunta actual.
+         */
+        function loadQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showResults();
+                return;
+            }
+
+            const qData = currentQuizQuestions[currentQuestionIndex];
+            const optionLabels = ["A", "B", "C"];
+            
+            let html = `<div class="question-box">
+                <p><strong>Pregunta ${currentQuestionIndex + 1} de ${totalQuestions}:</strong> ${qData.q}</p>
+                <div class="options">`;
+
+            qData.options.forEach((option, index) => {
+                const label = optionLabels[index];
+                html += `<label>
+                    <input type="radio" name="question" value="${label}">
+                    ${label}) ${option}
+                </label>`;
+            });
+
+            html += `</div></div>`;
+            quizContainer.innerHTML = html;
+            
+            actionButton.textContent = "Verificar Respuesta";
+            feedbackDiv.innerHTML = 'Selecciona una opción.';
+            feedbackDiv.className = ''; 
+            quizState = 'CHECK_ANSWER';
+        }
+
+        /**
+         * 4. Verifica la respuesta y muestra la retroalimentación detallada.
+         */
+        function checkAnswer() {
+            const selectedOption = document.querySelector('input[name="question"]:checked');
+            
+            if (!selectedOption) {
+                alert("Por favor, selecciona una respuesta antes de verificar.");
+                return;
+            }
+
+            const qData = currentQuizQuestions[currentQuestionIndex];
+            const userAnswer = selectedOption.value;
+            const correct = qData.correct;
+            const correctOptionText = qData.options[correct.charCodeAt(0) - 'A'.charCodeAt(0)];
+            
+            // 🔥 CORRECCIÓN 2: Eliminado el acceso a qData.feedback que no existe
+            // const feedbackText = qData.feedback;
+
+            // Deshabilitar opciones
+            document.querySelectorAll('input[name="question"]').forEach(input => {
+                input.disabled = true;
+            });
+
+            if (userAnswer === correct) {
+                score++;
+                feedbackDiv.className = 'correct';
+                feedbackDiv.innerHTML = `✅ <strong>¡Respuesta Correcta!</strong> Puntuación: ${score}/${currentQuestionIndex + 1}`;
+            } else {
+                feedbackDiv.className = 'incorrect';
+                feedbackDiv.innerHTML = `❌ <strong>Respuesta Incorrecta.</strong> La correcta era <strong>${correct}) ${correctOptionText}</strong>. Puntuación: ${score}/${currentQuestionIndex + 1}`;
+            }
+
+            // 🔥 CORRECCIÓN 2: Eliminado el código que intentaba añadir feedback sin datos
+            // feedbackDiv.innerHTML += `<div class="feedback-details"><strong>Retroalimentación:</strong> ${feedbackText}</div>`;
+
+            // Preparar para avanzar
+            actionButton.textContent = (currentQuestionIndex < totalQuestions - 1) ? "Siguiente Pregunta" : "Ver Resultados Finales";
+            quizState = 'ADVANCE';
+        }
+
+        function advanceQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function handleQuizClick() {
+            if (quizState === 'CHECK_ANSWER') {
+                checkAnswer();
+            } else if (quizState === 'ADVANCE') {
+                advanceQuestion();
+            }
+        }
+
+        /**
+         * Muestra resultados y el botón para un nuevo test.
+         */
+        function showResults() {
+            quizContainer.style.display = 'none';
+            actionButton.style.display = 'none';
+            feedbackDiv.style.display = 'none';
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.innerHTML = `
+                <div class="score-box">
+                    <h2>🎉 Test Finalizado 🎉</h2>
+                    <p>Has respondido correctamente <strong>${score}</strong> de <strong>${totalQuestions}</strong> preguntas.</p>
+                    <p style="font-size: 1.1em; font-weight: bold; color: #00ff62;">¡Sigue practicando!</p>
+                    <button onclick="startNewQuiz()">Generar Nuevo Test de ${quizSize} Preguntas</button>
+                </div>
+            `;
+            resultScreen.style.display = 'block';
+        }
+
+        /**
+         * Reinicia el quiz.
+         */
+        function startNewQuiz() {
+            document.getElementById('result-screen').style.display = 'none';
+            quizContainer.style.display = 'block';
+            actionButton.style.display = 'block';
+            feedbackDiv.style.display = 'block';
+
+            getRandomQuestions();
+            loadQuestion();
+        }
+        
+        // ⭐ EL MECANISMO DE CARGA MÁS SEGURO (MANTENER)
+        // Asegura que la función initQuiz() se ejecute solo cuando el DOM está completamente cargado.
+        document.addEventListener('DOMContentLoaded', initQuiz);
+</script>
+
+</body>
+</html>
